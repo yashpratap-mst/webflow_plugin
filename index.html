@@ -1,154 +1,127 @@
 <!-- Include this in Webflow's custom code section -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Emoji Picker</title>
-    <style>
-      #emoji-picker-container {
-        border: 1px solid #ccc;
-        padding: 10px;
-        width: 300px;
-        font-family: Arial, sans-serif;
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emoji Picker for Webflow</title>
+  <style>
+    #emoji-picker-container {
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 300px;
+      font-family: Arial, sans-serif;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #emoji-search {
+      width: 100%;
+      padding: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    #emoji-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .emoji {
+      font-size: 24px;
+      cursor: pointer;
+      padding: 5px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .emoji:hover {
+      background-color: #f0f0f0;
+      border-color: #ddd;
+    }
+  </style>
+</head>
+<body>
+
+<div id="emoji-picker-container">
+  <input type="text" id="emoji-search" placeholder="Search for an emoji...">
+  <div id="emoji-picker"></div>
+</div>
+
+<script>
+  const emojis = [
+    '😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊',
+    '😋', '😎', '😍', '😘', '😗', '😙', '😚', '🙂', '🤗', '🤩',
+    '🤔', '🤨', '😐', '😑', '😶', '🙄', '😏', '😣', '😥', '😮',
+    '🤐', '😯', '😪', '😫', '😴', '😌', '😛', '😜', '😝', '🤤'
+    // Add more emojis as needed
+  ];
+
+  let activeInput;
+
+  function loadEmojis() {
+    const emojiPicker = document.getElementById('emoji-picker');
+    emojis.forEach(emoji => {
+      const emojiElement = document.createElement('span');
+      emojiElement.classList.add('emoji');
+      emojiElement.textContent = emoji;
+      emojiElement.addEventListener('click', () => insertEmoji(emoji));
+      emojiPicker.appendChild(emojiElement);
+    });
+  }
+
+  function insertEmoji(emoji) {
+    if (activeInput) {
+      if (activeInput.isContentEditable) {
+        const range = document.getSelection().getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(emoji));
+        range.collapse(false);
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+      } else if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
+        const start = activeInput.selectionStart;
+        const end = activeInput.selectionEnd;
+        activeInput.value = activeInput.value.slice(0, start) + emoji + activeInput.value.slice(end);
+        activeInput.selectionStart = activeInput.selectionEnd = start + emoji.length;
       }
+      activeInput.focus();
+    }
+  }
 
-      #emoji-search {
-        width: 100%;
-        padding: 5px;
-        margin-bottom: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
+  function searchEmojis() {
+    const searchValue = document.getElementById('emoji-search').value.toLowerCase();
+    const emojiElements = document.querySelectorAll('.emoji');
+    emojiElements.forEach(emojiElement => {
+      if (emojiElement.textContent.toLowerCase().includes(searchValue)) {
+        emojiElement.style.display = '';
+      } else {
+        emojiElement.style.display = 'none';
       }
+    });
+  }
 
-      #emoji-picker {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        max-height: 200px;
-        overflow-y: auto;
-      }
+  document.getElementById('emoji-search').addEventListener('input', searchEmojis);
 
-      .emoji {
-        font-size: 24px;
-        cursor: pointer;
-        padding: 5px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        transition: background-color 0.3s, border-color 0.3s;
-      }
+  document.addEventListener('DOMContentLoaded', loadEmojis);
 
-      .emoji:hover {
-        background-color: #f0f0f0;
-        border-color: #ddd;
-      }
-    </style>
-  </head>
-  <body>
-    <div id="emoji-picker-container">
-      <input
-        type="text"
-        id="emoji-search"
-        placeholder="Search for an emoji..."
-      />
-      <div id="emoji-picker"></div>
-    </div>
+  document.addEventListener('click', (event) => {
+    const target = event.target;
+    if (target.isContentEditable || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+      activeInput = target;
+    }
+  });
+</script>
 
-    <script>
-      const emojis = [
-        "😀",
-        "😁",
-        "😂",
-        "🤣",
-        "😃",
-        "😄",
-        "😅",
-        "😆",
-        "😉",
-        "😊",
-        "😋",
-        "😎",
-        "😍",
-        "😘",
-        "😗",
-        "😙",
-        "😚",
-        "🙂",
-        "🤗",
-        "🤩",
-        "🤔",
-        "🤨",
-        "😐",
-        "😑",
-        "😶",
-        "🙄",
-        "😏",
-        "😣",
-        "😥",
-        "😮",
-        "🤐",
-        "😯",
-        "😪",
-        "😫",
-        "😴",
-        "😌",
-        "😛",
-        "😜",
-        "😝",
-        "🤤",
-        // Add more emojis as needed
-      ];
-
-      function loadEmojis() {
-        const emojiPicker = document.getElementById("emoji-picker");
-        emojis.forEach((emoji) => {
-          const emojiElement = document.createElement("span");
-          emojiElement.classList.add("emoji");
-          emojiElement.textContent = emoji;
-          emojiElement.addEventListener("click", () => insertEmoji(emoji));
-          emojiPicker.appendChild(emojiElement);
-        });
-      }
-
-      function insertEmoji(emoji) {
-        const activeElement = document.activeElement;
-        if (
-          activeElement &&
-          (activeElement.nodeName === "INPUT" ||
-            activeElement.nodeName === "TEXTAREA")
-        ) {
-          const start = activeElement.selectionStart;
-          const end = activeElement.selectionEnd;
-          activeElement.value =
-            activeElement.value.slice(0, start) +
-            emoji +
-            activeElement.value.slice(end);
-          activeElement.selectionStart = activeElement.selectionEnd =
-            start + emoji.length;
-        } else {
-          document.execCommand("insertText", false, emoji);
-        }
-      }
-
-      function searchEmojis() {
-        const searchValue = document
-          .getElementById("emoji-search")
-          .value.toLowerCase();
-        const emojiElements = document.querySelectorAll(".emoji");
-        emojiElements.forEach((emojiElement) => {
-          if (emojiElement.textContent.toLowerCase().includes(searchValue)) {
-            emojiElement.style.display = "";
-          } else {
-            emojiElement.style.display = "none";
-          }
-        });
-      }
-
-      document
-        .getElementById("emoji-search")
-        .addEventListener("input", searchEmojis);
-
-      document.addEventListener("DOMContentLoaded", loadEmojis);
-    </script>
-  </body>
+</body>
 </html>
+
