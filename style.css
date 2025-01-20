@@ -1,0 +1,24 @@
+/* <style>
+  #emoji-picker-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    width: 300px;
+  }
+
+  #emoji-search {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+  }
+
+  #emoji-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .emoji {
+    font-size: 24px;
+    cursor: pointer;
+  }
+</style> */
