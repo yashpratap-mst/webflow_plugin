@@ -1,4 +1,3 @@
-<!-- Include this in Webflow's custom code section -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +64,7 @@
     // Add more emojis as needed
   ];
 
-  let activeInput;
+  let activeElement;
 
   function loadEmojis() {
     const emojiPicker = document.getElementById('emoji-picker');
@@ -79,8 +78,8 @@
   }
 
   function insertEmoji(emoji) {
-    if (activeInput) {
-      if (activeInput.isContentEditable) {
+    if (activeElement) {
+      if (activeElement.isContentEditable) {
         const range = document.getSelection().getRangeAt(0);
         range.deleteContents();
         range.insertNode(document.createTextNode(emoji));
@@ -88,13 +87,13 @@
         const selection = window.getSelection();
         selection.removeAllRanges();
         selection.addRange(range);
-      } else if (activeInput.tagName === 'INPUT' || activeInput.tagName === 'TEXTAREA') {
-        const start = activeInput.selectionStart;
-        const end = activeInput.selectionEnd;
-        activeInput.value = activeInput.value.slice(0, start) + emoji + activeInput.value.slice(end);
-        activeInput.selectionStart = activeInput.selectionEnd = start + emoji.length;
+      } else if (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA') {
+        const start = activeElement.selectionStart;
+        const end = activeElement.selectionEnd;
+        activeElement.value = activeElement.value.slice(0, start) + emoji + activeElement.value.slice(end);
+        activeElement.selectionStart = activeElement.selectionEnd = start + emoji.length;
       }
-      activeInput.focus();
+      activeElement.focus();
     }
   }
 
@@ -116,8 +115,8 @@
 
   document.addEventListener('click', (event) => {
     const target = event.target;
-    if (target.isContentEditable || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
-      activeInput = target;
+    if (target.isContentEditable || target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'DIV') {
+      activeElement = target;
     }
   });
 </script>
