@@ -1,126 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emoji Picker for Webflow</title>
-  <style>
-    #emoji-picker-container {
-      border: 1px solid #ccc;
-      padding: 10px;
-      width: 300px;
-      font-family: Arial, sans-serif;
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background-color: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    #emoji-search {
-      width: 100%;
-      padding: 5px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    #emoji-picker {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    .emoji {
-      font-size: 24px;
-      cursor: pointer;
-      padding: 5px;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    .emoji:hover {
-      background-color: #f0f0f0;
-      border-color: #ddd;
-    }
-  </style>
-</head>
-<body>
-
-<div id="emoji-picker-container">
-  <input type="text" id="emoji-search" placeholder="Search for an emoji...">
-  <div id="emoji-picker"></div>
-</div>
-
-<script>
-  const emojis = [
-    '😀', '😁', '😂', '🤣', '😃', '😄', '😅', '😆', '😉', '😊',
-    '😋', '😎', '😍', '😘', '😗', '😙', '😚', '🙂', '🤗', '🤩',
-    '🤔', '🤨', '😐', '😑', '😶', '🙄', '😏', '😣', '😥', '😮',
-    '🤐', '😯', '😪', '😫', '😴', '😌', '😛', '😜', '😝', '🤤'
-    // Add more emojis as needed
-  ];
-
-  let activeElement;
-
-  function loadEmojis() {
-    const emojiPicker = document.getElementById('emoji-picker');
-    emojis.forEach(emoji => {
-      const emojiElement = document.createElement('span');
-      emojiElement.classList.add('emoji');
-      emojiElement.textContent = emoji;
-      emojiElement.addEventListener('click', () => insertEmoji(emoji));
-      emojiPicker.appendChild(emojiElement);
-    });
-  }
-
-  function insertEmoji(emoji) {
-    if (activeElement) {
-      if (activeElement.isContentEditable) {
-        const range = document.getSelection().getRangeAt(0);
-        range.deleteContents();
-        range.insertNode(document.createTextNode(emoji));
-        range.collapse(false);
-        const selection = window.getSelection();
-        selection.removeAllRanges();
-        selection.addRange(range);
-      } else if (activeElement.tagName === 'DIV' || activeElement.tagName === 'P') {
-        const start = activeElement.selectionStart;
-        const end = activeElement.selectionEnd;
-        activeElement.value = activeElement.value.slice(0, start) + emoji + activeElement.value.slice(end);
-        activeElement.selectionStart = activeElement.selectionEnd = start + emoji.length;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emoji Picker for Webflow</title>
+    <style>
+      #emoji-picker-container {
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 300px;
+        font-family: Arial, sans-serif;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       }
-      activeElement.focus();
-    }
-  }
 
-  function searchEmojis() {
-    const searchValue = document.getElementById('emoji-search').value.toLowerCase();
-    const emojiElements = document.querySelectorAll('.emoji');
-    emojiElements.forEach(emojiElement => {
-      if (emojiElement.textContent.toLowerCase().includes(searchValue)) {
-        emojiElement.style.display = '';
-      } else {
-        emojiElement.style.display = 'none';
+      #emoji-search {
+        width: 100%;
+        padding: 5px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
       }
-    });
-  }
 
-  document.getElementById('emoji-search').addEventListener('input', searchEmojis);
+      #emoji-picker {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        max-height: 200px;
+        overflow-y: auto;
+      }
 
-  document.addEventListener('DOMContentLoaded', loadEmojis);
+      .emoji {
+        font-size: 24px;
+        cursor: pointer;
+        padding: 5px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        transition: background-color 0.3s, border-color 0.3s;
+      }
 
-  document.addEventListener('click', (event) => {
-    const target = event.target;
-    if (target.isContentEditable || target.tagName === 'CODE' || target.tagName === 'P' || target.tagName === 'DIV') {
-      activeElement = target;
-    }
-  });
-</script>
+      .emoji:hover {
+        background-color: #f0f0f0;
+        border-color: #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="emoji-picker-container">
+      <input
+        type="text"
+        id="emoji-search"
+        placeholder="Search for an emoji..."
+      />
+      <div id="emoji-picker"></div>
+    </div>
 
-</body>
+    <script>
+      const emojis = [
+        "😀",
+        "😁",
+        "😂",
+        "🤣",
+        "😃",
+        "😄",
+        "😅",
+        "😆",
+        "😉",
+        "😊",
+        "😋",
+        "😎",
+        "😍",
+        "😘",
+        "😗",
+        "😙",
+        "😚",
+        "🙂",
+        "🤗",
+        "🤩",
+        "🤔",
+        "🤨",
+        "😐",
+        "😑",
+        "😶",
+        "🙄",
+        "😏",
+        "😣",
+        "😥",
+        "😮",
+        "🤐",
+        "😯",
+        "😪",
+        "😫",
+        "😴",
+        "😌",
+        "😛",
+        "😜",
+        "😝",
+        "🤤",
+        // Add more emojis as needed
+      ];
+
+      let activeElement;
+
+      function loadEmojis() {
+        const emojiPicker = document.getElementById("emoji-picker");
+        emojis.forEach((emoji) => {
+          const emojiElement = document.createElement("span");
+          emojiElement.classList.add("emoji");
+          emojiElement.textContent = emoji;
+          emojiElement.addEventListener("click", () => insertEmoji(emoji));
+          emojiPicker.appendChild(emojiElement);
+        });
+      }
+
+      function insertEmoji(emoji) {
+        if (activeElement) {
+          if (activeElement.isContentEditable) {
+            const range = document.getSelection().getRangeAt(0);
+            range.deleteContents();
+            range.insertNode(document.createTextNode(emoji));
+            range.collapse(false);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+          } else if (
+            activeElement.tagName === "INPUT" ||
+            activeElement.tagName === "TEXTAREA"
+          ) {
+            const start = activeElement.selectionStart;
+            const end = activeElement.selectionEnd;
+            activeElement.value =
+              activeElement.value.slice(0, start) +
+              emoji +
+              activeElement.value.slice(end);
+            activeElement.selectionStart = activeElement.selectionEnd =
+              start + emoji.length;
+          }
+          activeElement.focus();
+        }
+      }
+
+      function searchEmojis() {
+        const searchValue = document
+          .getElementById("emoji-search")
+          .value.toLowerCase();
+        const emojiElements = document.querySelectorAll(".emoji");
+        emojiElements.forEach((emojiElement) => {
+          if (emojiElement.textContent.toLowerCase().includes(searchValue)) {
+            emojiElement.style.display = "";
+          } else {
+            emojiElement.style.display = "none";
+          }
+        });
+      }
+
+      document
+        .getElementById("emoji-search")
+        .addEventListener("input", searchEmojis);
+
+      document.addEventListener("DOMContentLoaded", loadEmojis);
+
+      document.addEventListener("click", (event) => {
+        const target = event.target;
+        if (
+          target.isContentEditable ||
+          target.tagName === "CODE" ||
+          target.tagName === "P" ||
+          target.tagName === "DIV"
+        ) {
+          activeElement = target;
+        }
+      });
+    </script>
+  </body>
 </html>
-
