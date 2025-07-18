@@ -59,121 +59,168 @@
     </div>
 
     <script>
-      const emojis = [
-        "😀",
-        "😁",
-        "😂",
-        "🤣",
-        "😃",
-        "😄",
-        "😅",
-        "😆",
-        "😉",
-        "😊",
-        "😋",
-        "😎",
-        "😍",
-        "😘",
-        "😗",
-        "😙",
-        "😚",
-        "🙂",
-        "🤗",
-        "🤩",
-        "🤔",
-        "🤨",
-        "😐",
-        "😑",
-        "😶",
-        "🙄",
-        "😏",
-        "😣",
-        "😥",
-        "😮",
-        "🤐",
-        "😯",
-        "😪",
-        "😫",
-        "😴",
-        "😌",
-        "😛",
-        "😜",
-        "😝",
-        "🤤",
-        // Add more emojis as needed
-      ];
+      (function () {
+  const emojiPickerContainer = document.createElement("div");
+  emojiPickerContainer.id = "emoji-picker";
+  document.body.appendChild(emojiPickerContainer);
 
-      let activeElement;
+  const emojiList = [
+    "😀",
+    "😂",
+    "😃",
+    "😄",
+    "😅",
+    "😆",
+    "😉",
+    "😊",
+    "😋",
+    "😎",
+  ];
 
-      function loadEmojis() {
-        const emojiPicker = document.getElementById("emoji-picker");
-        emojis.forEach((emoji) => {
-          const emojiElement = document.createElement("span");
-          emojiElement.classList.add("emoji");
-          emojiElement.textContent = emoji;
-          emojiElement.addEventListener("click", () => insertEmoji(emoji));
-          emojiPicker.appendChild(emojiElement);
-        });
+  const emojiPicker = document.createElement("div");
+  emojiPicker.classList.add("emoji-picker");
+  emojiList.forEach((emoji) => {
+    const emojiButton = document.createElement("button");
+    emojiButton.textContent = emoji;
+    emojiButton.addEventListener("click", () => {
+      const selectedDiv = document.querySelector(".selected-div");
+      if (selectedDiv) {
+        selectedDiv.innerHTML += emoji;
+      } else {
+        alert("Please select a div first.");
       }
+    });
+    emojiPicker.appendChild(emojiButton);
+  });
 
-      function insertEmoji(emoji) {
-        if (activeElement) {
-          if (activeElement.isContentEditable) {
-            const range = document.getSelection().getRangeAt(0);
-            range.deleteContents();
-            range.insertNode(document.createTextNode(emoji));
-            range.collapse(false);
-            const selection = window.getSelection();
-            selection.removeAllRanges();
-            selection.addRange(range);
-          } else if (
-            activeElement.tagName === "INPUT" ||
-            activeElement.tagName === "TEXTAREA"
-          ) {
-            const start = activeElement.selectionStart;
-            const end = activeElement.selectionEnd;
-            activeElement.value =
-              activeElement.value.slice(0, start) +
-              emoji +
-              activeElement.value.slice(end);
-            activeElement.selectionStart = activeElement.selectionEnd =
-              start + emoji.length;
-          }
-          activeElement.focus();
-        }
+  emojiPickerContainer.appendChild(emojiPicker);
+
+  document.addEventListener("click", function (e) {
+    if (e.target && e.target.matches(".example-div")) {
+      if (e.target.classList.contains("selected-div")) {
+        e.target.classList.remove("selected-div");
+      } else {
+        e.target.classList.add("selected-div");
       }
+    }
+  });
+})();
 
-      function searchEmojis() {
-        const searchValue = document
-          .getElementById("emoji-search")
-          .value.toLowerCase();
-        const emojiElements = document.querySelectorAll(".emoji");
-        emojiElements.forEach((emojiElement) => {
-          if (emojiElement.textContent.toLowerCase().includes(searchValue)) {
-            emojiElement.style.display = "";
-          } else {
-            emojiElement.style.display = "none";
-          }
-        });
-      }
+      // const emojis = [
+      //   "😀",
+      //   "😁",
+      //   "😂",
+      //   "🤣",
+      //   "😃",
+      //   "😄",
+      //   "😅",
+      //   "😆",
+      //   "😉",
+      //   "😊",
+      //   "😋",
+      //   "😎",
+      //   "😍",
+      //   "😘",
+      //   "😗",
+      //   "😙",
+      //   "😚",
+      //   "🙂",
+      //   "🤗",
+      //   "🤩",
+      //   "🤔",
+      //   "🤨",
+      //   "😐",
+      //   "😑",
+      //   "😶",
+      //   "🙄",
+      //   "😏",
+      //   "😣",
+      //   "😥",
+      //   "😮",
+      //   "🤐",
+      //   "😯",
+      //   "😪",
+      //   "😫",
+      //   "😴",
+      //   "😌",
+      //   "😛",
+      //   "😜",
+      //   "😝",
+      //   "🤤",
+      //   // Add more emojis as needed
+      // ];
 
-      document
-        .getElementById("emoji-search")
-        .addEventListener("input", searchEmojis);
+      // let activeElement;
 
-      document.addEventListener("DOMContentLoaded", loadEmojis);
+      // function loadEmojis() {
+      //   const emojiPicker = document.getElementById("emoji-picker");
+      //   emojis.forEach((emoji) => {
+      //     const emojiElement = document.createElement("span");
+      //     emojiElement.classList.add("emoji");
+      //     emojiElement.textContent = emoji;
+      //     emojiElement.addEventListener("click", () => insertEmoji(emoji));
+      //     emojiPicker.appendChild(emojiElement);
+      //   });
+      // }
 
-      document.addEventListener("click", (event) => {
-        const target = event.target;
-        if (
-          target.isContentEditable ||
-          target.tagName === "CODE" ||
-          target.tagName === "P" ||
-          target.tagName === "DIV"
-        ) {
-          activeElement = target;
-        }
-      });
+      // function insertEmoji(emoji) {
+      //   if (activeElement) {
+      //     if (activeElement.isContentEditable) {
+      //       const range = document.getSelection().getRangeAt(0);
+      //       range.deleteContents();
+      //       range.insertNode(document.createTextNode(emoji));
+      //       range.collapse(false);
+      //       const selection = window.getSelection();
+      //       selection.removeAllRanges();
+      //       selection.addRange(range);
+      //     } else if (
+      //       activeElement.tagName === "INPUT" ||
+      //       activeElement.tagName === "TEXTAREA"
+      //     ) {
+      //       const start = activeElement.selectionStart;
+      //       const end = activeElement.selectionEnd;
+      //       activeElement.value =
+      //         activeElement.value.slice(0, start) +
+      //         emoji +
+      //         activeElement.value.slice(end);
+      //       activeElement.selectionStart = activeElement.selectionEnd =
+      //         start + emoji.length;
+      //     }
+      //     activeElement.focus();
+      //   }
+      // }
+
+      // function searchEmojis() {
+      //   const searchValue = document
+      //     .getElementById("emoji-search")
+      //     .value.toLowerCase();
+      //   const emojiElements = document.querySelectorAll(".emoji");
+      //   emojiElements.forEach((emojiElement) => {
+      //     if (emojiElement.textContent.toLowerCase().includes(searchValue)) {
+      //       emojiElement.style.display = "";
+      //     } else {
+      //       emojiElement.style.display = "none";
+      //     }
+      //   });
+      // }
+
+      // document
+      //   .getElementById("emoji-search")
+      //   .addEventListener("input", searchEmojis);
+
+      // document.addEventListener("DOMContentLoaded", loadEmojis);
+
+      // document.addEventListener("click", (event) => {
+      //   const target = event.target;
+      //   if (
+      //     target.isContentEditable ||
+      //     target.tagName === "CODE" ||
+      //     target.tagName === "P" ||
+      //     target.tagName === "DIV"
+      //   ) {
+      //     activeElement = target;
+      //   }
+      // });
     </script>
   </body>
 </html>
